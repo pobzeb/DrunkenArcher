@@ -1,6 +1,11 @@
-*.class
+# IOS Files
+[Tt]humbs.db
+*.DS_Store
 
-# Package Files #
-*.jar
-*.war
-*.ear
+# build directory
+build/
+bin/
+
+# height map files
+OrigSaved.png
+saved.png
