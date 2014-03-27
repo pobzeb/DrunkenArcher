@@ -23,15 +23,15 @@ To run:
 ----------
 Keys:
 ----------
-A,W,S,D to move around
-Arrow Keys or mouse to look around
-Shift to run
-Ctrl to crouch/fly down
-Space to jump/fly up
-f to toggle flying mode
-P to toggle fullscreen
-Esc to release mouse capture
-Tab to toggle Wireframe/Polygon File modes
+ - A,W,S,D to move around
+ - Arrow Keys or mouse to look around
+ - Shift to run
+ - Ctrl to crouch/fly down
+ - Space to jump/fly up
+ - f to toggle flying mode
+ - P to toggle fullscreen
+ - Esc to release mouse capture
+ - Tab to toggle Wireframe/Polygon File modes
 
 
 ----------
