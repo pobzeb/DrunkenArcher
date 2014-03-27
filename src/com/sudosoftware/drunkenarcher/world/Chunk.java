@@ -10,7 +10,7 @@ import org.lwjgl.BufferUtils;
 public class Chunk {
 
 	// Define the chunk metrics.
-	public static final int CHUNK_SIZE = 16;
+	public static final int CHUNK_SIZE = 24;
 	public static final int CHUNK_HEIGHT = 16;
 
 	// Define constant values.

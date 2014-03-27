@@ -17,7 +17,7 @@ import com.sudosoftware.drunkenarcher.util.SimplexNoise;
 
 public class World {
 	// World size in chunks.
-	public static final int WORLD_SIZE = 8;
+	public static final int WORLD_SIZE = 10;
 	public static final int WORLD_HEIGHT = 1;
 
 	// Used for random things...
@@ -66,25 +66,15 @@ public class World {
 	}
 
 	public void generate() {
-//		Chunk chunk;
-//		for (int chunkX = 0; chunkX < WORLD_SIZE; chunkX++) {
-//			for (int chunkZ = 0; chunkZ < WORLD_SIZE; chunkZ++) {
-//				for (int chunkY = 0; chunkY < WORLD_HEIGHT; chunkY++) {
-//					chunk = ChunkManager.generateSolidChunk(chunkX, chunkY, chunkZ);
-//					addChunk(String.valueOf(chunkX+","+chunkY+","+chunkZ), chunk);
-//					chunk.buildVBOs();
-//				}
-//			}
-//		}
-
 		// First, generate a 2D noise map.
 		double[][] noiseMap = new double[WORLD_SIZE * Chunk.CHUNK_SIZE][WORLD_SIZE * Chunk.CHUNK_SIZE];
 		for (int x = 0; x < WORLD_SIZE * Chunk.CHUNK_SIZE; x++) {
 			for (int z = 0; z < WORLD_SIZE * Chunk.CHUNK_SIZE; z++) {
 				noiseMap[x][z] = (1 + SimplexNoise.calculateNoiseHeight(x, z, 0.008, 5, 0.05)) * 0.5f;
-				if (noiseMap[x][z] > 1) noiseMap[x][z] = 1;
+//				if (noiseMap[x][z] > 1) noiseMap[x][z] = 1;
 			}
 		}
+		// Save off the image for this map (just for fun reference later).
 		ImageWriter.greyWriteImage(noiseMap);
 
 		// Now, use the noise map to render the chunks.

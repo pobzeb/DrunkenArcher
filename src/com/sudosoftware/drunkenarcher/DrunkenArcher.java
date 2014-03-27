@@ -20,10 +20,8 @@ public class DrunkenArcher extends Game {
 	private static final String TITLE = "Drunken Archer";
 
 	// Default screen size.
-//	private static final int WIDTH = 1080;
-//	private static final int HEIGHT = WIDTH * 9 / 16;
-	private static final int WIDTH = 1024;
-	private static final int HEIGHT = 768;
+	private static final int WIDTH = 1080;
+	private static final int HEIGHT = WIDTH * 9 / 16;
 
 	// Fog settings.
 	private static final float Z_FOG_NEAR = 40f;
@@ -86,7 +84,6 @@ public class DrunkenArcher extends Game {
 			fogColors.put(new float[] { 0.3f, 0.6f, 0.6f, 1.0f });
 			glClearColor(0.1f, 0.1f, 0.1f, 1f);
 			fogColors.flip();
-
 
 			glFog(GL_FOG_COLOR, fogColors);
 			glFogi(GL_FOG_MODE, GL_LINEAR);
@@ -202,8 +199,7 @@ public class DrunkenArcher extends Game {
 
 	@Override
 	public void resized() {
-//		glViewport(0, 0, (int)(Display.getWidth() * Display.getPixelScaleFactor()), (int)(Display.getHeight() * Display.getPixelScaleFactor()));
-		glViewport(0, 0, Display.getWidth(), Display.getHeight());
+		glViewport(0, 0, (int)(Display.getWidth() * Display.getPixelScaleFactor()), (int)(Display.getHeight() * Display.getPixelScaleFactor()));
 	}
 
 	@Override
