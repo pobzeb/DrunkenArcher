@@ -1,13 +1,13 @@
 package com.sudosoftware.game;
 
 import org.lwjgl.opengl.GL11;
-
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.PixelFormat;
 
 import com.sudosoftware.game.input.InputHandler;
 
@@ -54,7 +54,7 @@ public abstract class Game {
 			System.setProperty("org.lwjgl.opengl.Display.enableHighDPI", "false");
 
 			// Try to set the display mode.
-			Display.create();
+			Display.create(new PixelFormat(24, 0, 24, 0, 0));
 			Display.setTitle(this.gameTitle + (showFPS ? "  -  FPS: " + 0 : ""));
 			setDisplayMode(new DisplayMode(this.screenWidth, this.screenHeight));
 			Display.setVSyncEnabled(vSyncEnabled);

@@ -1,6 +1,7 @@
 package com.sudosoftware.drunkenarcher;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 
 import java.nio.FloatBuffer;
 
@@ -67,8 +68,10 @@ public class DrunkenArcher extends Game {
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 		glCullFace(GL_BACK);
 		glEnable(GL_CULL_FACE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 //		glEnable(GL_BLEND);
 //		glEnable(GL_ALPHA_TEST);
 //		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
