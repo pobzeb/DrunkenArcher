@@ -10,10 +10,12 @@ import java.util.Random;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
+import com.sudosoftware.game.shader.ShaderProgram;
 import com.sudosoftware.drunkenarcher.entity.Player;
 import com.sudosoftware.drunkenarcher.util.ChunkManager;
 import com.sudosoftware.drunkenarcher.util.ImageWriter;
 import com.sudosoftware.drunkenarcher.util.SimplexNoise;
+import com.sudosoftware.game.utils.FileUtil;
 
 public class World {
 	// World size in chunks.
@@ -33,6 +35,9 @@ public class World {
 	// The main world texture.
 	public Texture texture;
 
+	// The main world shader.
+	public ShaderProgram shader;
+
 	// Define the player.
 	public Player player;
 
@@ -44,6 +49,9 @@ public class World {
 		this.player.setFarPlane(300.0f);
 		this.player.setPosition(-((WORLD_SIZE * Chunk.CHUNK_SIZE) / 2), 0, -((WORLD_SIZE * Chunk.CHUNK_SIZE) / 2));
 		this.player.setRotation(0f, 0f, 0f);
+
+		// Create a shader.
+		this.shader = new ShaderProgram(FileUtil.readFromFile("res/shaders/shader.vert"), FileUtil.readFromFile("res/shaders/shader.frag"));
 
 		// Load textures.
 		try {
@@ -134,6 +142,7 @@ public class World {
 		// Move and rotate the player.
 		this.player.render();
 
+		// Enable resources.
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
@@ -142,6 +151,7 @@ public class World {
 			chunk.render();
 		}
 
+		// Release resources.
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	}
@@ -155,5 +165,7 @@ public class World {
 		if (this.texture != null)
 			this.texture.release();
 		this.chunks = null;
+
+		shader.dispose();
 	}
 }

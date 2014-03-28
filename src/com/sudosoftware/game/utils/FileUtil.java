@@ -1,6 +1,8 @@
 package com.sudosoftware.game.utils;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
 import com.sudosoftware.game.Game;
@@ -18,7 +20,7 @@ public class FileUtil {
 
 		try {
 			System.out.println("Loading File: " + name);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(Game.class.getClassLoader().getResourceAsStream(name)));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(name))));
 			String line;
 			while ((line = reader.readLine()) != null) {
 				source.append(line).append("\n");

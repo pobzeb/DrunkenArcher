@@ -144,9 +144,14 @@ public class Chunk {
 				glVertexPointer(Block.VERTEX_SIZE, GL_FLOAT, stride, 0L);
 				glTexCoordPointer(Block.TEXTURE_COORD_SIZE, GL_FLOAT, stride, textureCoordOffset);
 
+				// Use the shader.
+				World.getInstance().shader.use();
+
 				// Render the chunk.
-//				glDrawArrays(GL_TRIANGLES, 0, (CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE) * verticesPerCube);
 				glDrawArrays(GL_QUADS, 0, (CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE) * verticesPerCube);
+
+				// Release the shader.
+				World.getInstance().shader.release();
 
 				// Remove the buffer binding.
 				glBindBuffer(GL_ARRAY_BUFFER, 0);
