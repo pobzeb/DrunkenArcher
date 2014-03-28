@@ -8,7 +8,7 @@ public class Block {
 	public static final float BLOCK_SIZE = 2.0f;
 
 	// Define the texture rows/columns.
-	public static final int TEXTURES_PER_ROW_COL = 8;
+	public static final int TEXTURES_PER_ROW_COL = 16;
 
 	// Define the vertex count, texture coord count.
 	public static final int VERTEX_SIZE = 3;

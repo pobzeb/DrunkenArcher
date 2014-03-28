@@ -47,7 +47,7 @@ public class World {
 
 		// Load textures.
 		try {
-			this.texture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/textures/world.png")));
+			this.texture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/textures/blocks.png")));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
