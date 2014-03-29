@@ -48,8 +48,13 @@ public class Chunk {
 	public void buildVBOs() {
 		// Check to see if we already built this.
 		if (this.vcHandle < 0) {
+			// Get the buffer handle.
+			this.vcHandle = glGenBuffers();
+
 			// Build the buffers (vertex count * FloatSize).
-			FloatBuffer vcBuffer = BufferUtils.createFloatBuffer((CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE) * ((verticesPerCube + textureCoordsPerCube) * FLOAT_SIZE));
+//			FloatBuffer vcBuffer = BufferUtils.createFloatBuffer((CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE) * ((verticesPerCube + textureCoordsPerCube) * FLOAT_SIZE));
+			glNewList(this.vcHandle, GL_COMPILE);
+			glBegin(GL_QUADS);
 
 			// Determine which blocks can be drawn.
 			int surroundingBlockCount = 0;
@@ -104,7 +109,8 @@ public class Chunk {
 							}
 
 							// Allow this block to be rendered.
-							Block.addToVBO(this.blocks[blockX][blockY][blockZ], (this.x * CHUNK_SIZE) + blockX * Block.BLOCK_SIZE, (this.y * CHUNK_HEIGHT) + blockY * Block.BLOCK_SIZE, (this.z * CHUNK_SIZE) + blockZ * Block.BLOCK_SIZE, vcBuffer);
+//							Block.build(this.blocks[blockX][blockY][blockZ], (this.x * CHUNK_SIZE) + blockX * Block.BLOCK_SIZE, (this.y * CHUNK_HEIGHT) + blockY * Block.BLOCK_SIZE, (this.z * CHUNK_SIZE) + blockZ * Block.BLOCK_SIZE, vcBuffer);
+							Block.build(this.blocks[blockX][blockY][blockZ], (this.x * CHUNK_SIZE) + blockX * Block.BLOCK_SIZE, (this.y * CHUNK_HEIGHT) + blockY * Block.BLOCK_SIZE, (this.z * CHUNK_SIZE) + blockZ * Block.BLOCK_SIZE, null);
 
 							// Increment the count for renderable blocks in this chunk.
 							renderableBlockCount++;
@@ -117,49 +123,58 @@ public class Chunk {
 					}
 				}
 			}
+			glEnd();
+			glEndList();
 
 			if (renderableBlockCount == 0) return;
 
 			// Flip the buffers so they are ready to go.
-			vcBuffer.flip();
-	
-			// Get the buffer handle.
-			this.vcHandle = glGenBuffers();
+//			vcBuffer.flip();
 
 			// Load the buffers into OpenGL
 			glBindBuffer(GL_ARRAY_BUFFER, this.vcHandle);
-			glBufferData(GL_ARRAY_BUFFER, vcBuffer, GL_STATIC_DRAW);
+//			glBufferData(GL_ARRAY_BUFFER, vcBuffer, GL_STATIC_DRAW);
 		}
 	}
 
 	public void render() {
+		// Bind the texture for this block.
+		glEnable(GL_TEXTURE_2D);
+		World.getInstance().texture.bind();
+
 		if (this.vcHandle >= 0) {
-			try {
-				// Bind the texture for this block.
-				glEnable(GL_TEXTURE_2D);
-				World.getInstance().texture.bind();
+			// Render.
+			renderDisplayList();
+//			renderVBO();
+		}
+	}
 
-				// Bind the buffers.
-				glBindBuffer(GL_ARRAY_BUFFER, this.vcHandle);
-				glVertexPointer(Block.VERTEX_SIZE, GL_FLOAT, stride, 0L);
-				glTexCoordPointer(Block.TEXTURE_COORD_SIZE, GL_FLOAT, stride, textureCoordOffset);
+	public void renderDisplayList() {
+		glCallList(this.vcHandle);
+	}
 
-				// Use the shader.
-				World.getInstance().shader.use();
+	public void renderVBO() {
+		try {
+			// Bind the buffers.
+			glBindBuffer(GL_ARRAY_BUFFER, this.vcHandle);
+			glVertexPointer(Block.VERTEX_SIZE, GL_FLOAT, stride, 0L);
+			glTexCoordPointer(Block.TEXTURE_COORD_SIZE, GL_FLOAT, stride, textureCoordOffset);
 
-				// Render the chunk.
-				glDrawArrays(GL_QUADS, 0, (CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE) * verticesPerCube);
+			// Use the shader.
+//			World.getInstance().shader.use();
 
-				// Release the shader.
-				World.getInstance().shader.release();
+			// Render the chunk.
+			glDrawArrays(GL_QUADS, 0, (CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE) * verticesPerCube);
 
-				// Remove the buffer binding.
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
-			}
-			catch (Exception e) {
-				// Exceptions will be thrown for blocks without VBOs.
-				e.printStackTrace();
-			}
+			// Release the shader.
+//			World.getInstance().shader.release();
+
+			// Remove the buffer binding.
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+		}
+		catch (Exception e) {
+			// Exceptions will be thrown for blocks without VBOs.
+			e.printStackTrace();
 		}
 	}
 

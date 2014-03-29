@@ -1,5 +1,7 @@
 package com.sudosoftware.drunkenarcher.world;
 
+import static org.lwjgl.opengl.GL11.*;
+
 import java.nio.FloatBuffer;
 
 public class Block {
@@ -14,7 +16,7 @@ public class Block {
 	public static final int VERTEX_SIZE = 3;
 	public static final int TEXTURE_COORD_SIZE = 2;
 
-	public static void addToVBO(byte blockTypeID, float x, float y, float z, FloatBuffer buffer) {
+	public static void build(byte blockTypeID, float x, float y, float z, FloatBuffer buffer) {
 		// Get the block type.
 		BlockType blockType = BlockType.findByID(blockTypeID);
 
@@ -27,42 +29,58 @@ public class Block {
 		UVMap top = new UVMap(blockType.textureIDTop);
 		UVMap bottom = new UVMap(blockType.textureIDBottom);
 
-		// Vertices, color and texture mapping.
+		// Vertices and texture mapping.
 		// Front Face.
-		buffer.put(x-offset).put(y-offset).put(z+offset).put(side.u0).put(side.v1);
-		buffer.put(x+offset).put(y-offset).put(z+offset).put(side.u1).put(side.v1);
-		buffer.put(x+offset).put(y+offset).put(z+offset).put(side.u1).put(side.v0);
-		buffer.put(x-offset).put(y+offset).put(z+offset).put(side.u0).put(side.v0);
+		if (buffer == null) glNormal3f(0.0f, 0.0f, 1.0f);
+		doVertex(x-offset, y-offset, z+offset, side.u1, side.v1, buffer);
+		doVertex(x+offset, y-offset, z+offset, side.u0, side.v1, buffer);
+		doVertex(x+offset, y+offset, z+offset, side.u0, side.v0, buffer);
+		doVertex(x-offset, y+offset, z+offset, side.u1, side.v0, buffer);
 
 		// Back Face.
-		buffer.put(x+offset).put(y-offset).put(z-offset).put(side.u0).put(side.v1);
-		buffer.put(x-offset).put(y-offset).put(z-offset).put(side.u1).put(side.v1);
-		buffer.put(x-offset).put(y+offset).put(z-offset).put(side.u1).put(side.v0);
-		buffer.put(x+offset).put(y+offset).put(z-offset).put(side.u0).put(side.v0);
+		if (buffer == null) glNormal3f(0.0f, 0.0f, -1.0f);
+		doVertex(x-offset, y-offset, z-offset, side.u0, side.v1, buffer);
+		doVertex(x-offset, y+offset, z-offset, side.u0, side.v0, buffer);
+		doVertex(x+offset, y+offset, z-offset, side.u1, side.v0, buffer);
+		doVertex(x+offset, y-offset, z-offset, side.u1, side.v1, buffer);
 
 		// Left Face.
-		buffer.put(x-offset).put(y-offset).put(z-offset).put(side.u0).put(side.v1);
-		buffer.put(x-offset).put(y-offset).put(z+offset).put(side.u1).put(side.v1);
-		buffer.put(x-offset).put(y+offset).put(z+offset).put(side.u1).put(side.v0);
-		buffer.put(x-offset).put(y+offset).put(z-offset).put(side.u0).put(side.v0);
+		if (buffer == null) glNormal3f(-1.0f, 0.0f, 0.0f);
+		doVertex(x-offset, y-offset, z-offset, side.u1, side.v1, buffer);
+		doVertex(x-offset, y-offset, z+offset, side.u0, side.v1, buffer);
+		doVertex(x-offset, y+offset, z+offset, side.u0, side.v0, buffer);
+		doVertex(x-offset, y+offset, z-offset, side.u1, side.v0, buffer);
 
 		// Right Face.
-		buffer.put(x+offset).put(y-offset).put(z+offset).put(side.u0).put(side.v1);
-		buffer.put(x+offset).put(y-offset).put(z-offset).put(side.u1).put(side.v1);
-		buffer.put(x+offset).put(y+offset).put(z-offset).put(side.u1).put(side.v0);
-		buffer.put(x+offset).put(y+offset).put(z+offset).put(side.u0).put(side.v0);
+		if (buffer == null) glNormal3f(1.0f, 0.0f, 0.0f);
+		doVertex(x+offset, y-offset, z-offset, side.u0, side.v1, buffer);
+		doVertex(x+offset, y+offset, z-offset, side.u0, side.v0, buffer);
+		doVertex(x+offset, y+offset, z+offset, side.u1, side.v0, buffer);
+		doVertex(x+offset, y-offset, z+offset, side.u1, side.v1, buffer);
 
 		// Top Face.
-		buffer.put(x-offset).put(y+offset).put(z+offset).put(top.u0).put(top.v1);
-		buffer.put(x+offset).put(y+offset).put(z+offset).put(top.u1).put(top.v1);
-		buffer.put(x+offset).put(y+offset).put(z-offset).put(top.u1).put(top.v0);
-		buffer.put(x-offset).put(y+offset).put(z-offset).put(top.u0).put(top.v0);
+		if (buffer == null) glNormal3f(0.0f, 1.0f, 0.0f);
+		doVertex(x-offset, y+offset, z-offset, top.u0, top.v1, buffer);
+		doVertex(x-offset, y+offset, z+offset, top.u0, top.v0, buffer);
+		doVertex(x+offset, y+offset, z+offset, top.u1, top.v0, buffer);
+		doVertex(x+offset, y+offset, z-offset, top.u1, top.v1, buffer);
 
 		// Bottom Face.
-		buffer.put(x-offset).put(y-offset).put(z-offset).put(bottom.u0).put(bottom.v1);
-		buffer.put(x+offset).put(y-offset).put(z-offset).put(bottom.u1).put(bottom.v1);
-		buffer.put(x+offset).put(y-offset).put(z+offset).put(bottom.u1).put(bottom.v0);
-		buffer.put(x-offset).put(y-offset).put(z+offset).put(bottom.u0).put(bottom.v0);
+		if (buffer == null) glNormal3f(0.0f, -1.0f, 0.0f);
+		doVertex(x-offset, y-offset, z-offset, bottom.u1, bottom.v1, buffer);
+		doVertex(x+offset, y-offset, z-offset, bottom.u0, bottom.v1, buffer);
+		doVertex(x+offset, y-offset, z+offset, bottom.u0, bottom.v0, buffer);
+		doVertex(x-offset, y-offset, z+offset, bottom.u1, bottom.v0, buffer);
+	}
+
+	private static void doVertex(float x, float y, float z, float u, float v, FloatBuffer buffer) {
+		if (buffer == null) {
+			glTexCoord2f(u, v);
+			glVertex3f(x, y, z);
+		}
+		else {
+			buffer.put(x).put(y).put(z).put(u).put(v);
+		}
 	}
 
 	private static class UVMap {
