@@ -27,6 +27,9 @@ public class Chunk {
 	// Block rendering ID's.
 	public int vcHandle = -1;
 
+	// Use VBO or DisplayList.
+	public boolean useVBOs = false;
+
 	// Counts for vertices and textures.
 	private int verticesPerCube = (Block.VERTEX_SIZE * FACE_DIVISIONS) * FACE_COUNT;
 	private int textureCoordsPerCube = (Block.TEXTURE_COORD_SIZE * FACE_DIVISIONS) * FACE_COUNT;
@@ -46,15 +49,26 @@ public class Chunk {
 	}
 
 	public void buildVBOs() {
+		// Define the buffer to use if using VBOs.
+		FloatBuffer vcBuffer = null;
+
 		// Check to see if we already built this.
 		if (this.vcHandle < 0) {
-			// Get the buffer handle.
-			this.vcHandle = glGenBuffers();
+			if (useVBOs) {
+				// Get the buffer handle.
+				this.vcHandle = glGenBuffers();
 
-			// Build the buffers (vertex count * FloatSize).
-//			FloatBuffer vcBuffer = BufferUtils.createFloatBuffer((CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE) * ((verticesPerCube + textureCoordsPerCube) * FLOAT_SIZE));
-			glNewList(this.vcHandle, GL_COMPILE);
-			glBegin(GL_QUADS);
+				// Build the buffers (vertex count * FloatSize).
+				vcBuffer = BufferUtils.createFloatBuffer((CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE) * ((verticesPerCube + textureCoordsPerCube) * FLOAT_SIZE));
+			}
+			else {
+				// Build the display list.
+				this.vcHandle = glGenLists(1);
+
+				// Begin the chunk display list.
+				glNewList(this.vcHandle, GL_COMPILE);
+				glBegin(GL_QUADS);
+			}
 
 			// Determine which blocks can be drawn.
 			int surroundingBlockCount = 0;
@@ -109,8 +123,7 @@ public class Chunk {
 							}
 
 							// Allow this block to be rendered.
-//							Block.build(this.blocks[blockX][blockY][blockZ], (this.x * CHUNK_SIZE) + blockX * Block.BLOCK_SIZE, (this.y * CHUNK_HEIGHT) + blockY * Block.BLOCK_SIZE, (this.z * CHUNK_SIZE) + blockZ * Block.BLOCK_SIZE, vcBuffer);
-							Block.build(this.blocks[blockX][blockY][blockZ], (this.x * CHUNK_SIZE) + blockX * Block.BLOCK_SIZE, (this.y * CHUNK_HEIGHT) + blockY * Block.BLOCK_SIZE, (this.z * CHUNK_SIZE) + blockZ * Block.BLOCK_SIZE, null);
+							Block.build(this.blocks[blockX][blockY][blockZ], (this.x * CHUNK_SIZE) + blockX * Block.BLOCK_SIZE, (this.y * CHUNK_HEIGHT) + blockY * Block.BLOCK_SIZE, (this.z * CHUNK_SIZE) + blockZ * Block.BLOCK_SIZE, vcBuffer);
 
 							// Increment the count for renderable blocks in this chunk.
 							renderableBlockCount++;
@@ -123,17 +136,21 @@ public class Chunk {
 					}
 				}
 			}
-			glEnd();
-			glEndList();
+			if (!useVBOs) {
+				glEnd();
+				glEndList();
+			}
 
 			if (renderableBlockCount == 0) return;
 
-			// Flip the buffers so they are ready to go.
-//			vcBuffer.flip();
+			if (useVBOs) {
+				// Flip the buffers so they are ready to go.
+				vcBuffer.flip();
 
-			// Load the buffers into OpenGL
-			glBindBuffer(GL_ARRAY_BUFFER, this.vcHandle);
-//			glBufferData(GL_ARRAY_BUFFER, vcBuffer, GL_STATIC_DRAW);
+				// Load the buffers into OpenGL
+				glBindBuffer(GL_ARRAY_BUFFER, this.vcHandle);
+				glBufferData(GL_ARRAY_BUFFER, vcBuffer, GL_STATIC_DRAW);
+			}
 		}
 	}
 
@@ -144,8 +161,12 @@ public class Chunk {
 
 		if (this.vcHandle >= 0) {
 			// Render.
-			renderDisplayList();
-//			renderVBO();
+			if (useVBOs) {
+				renderVBO();
+			}
+			else {
+				renderDisplayList();
+			}
 		}
 	}
 
