@@ -159,7 +159,7 @@ public class DrunkenArcher extends Game {
 			glPolygonMode(GL_FRONT, GL_LINE);
 		}
 		else {
-			glLineWidth(1.0f);
+			glLineWidth(0.0f);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
