@@ -19,8 +19,8 @@ import com.sudosoftware.game.utils.FileUtil;
 
 public class World {
 	// World size in chunks.
-	public static final int WORLD_SIZE = 10;
-	public static final int WORLD_HEIGHT = 1;
+	public static final int WORLD_SIZE = 20;
+	public static final int WORLD_HEIGHT = 2;
 
 	// Used for random things...
 	public static final Random random = new Random();
